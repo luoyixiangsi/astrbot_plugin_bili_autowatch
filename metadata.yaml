@@ -1,0 +1,35 @@
+name: astrbot_plugin_bili_autowatch
+display_name: B站自动刷视频助手
+short_desc: 让 bot 自己刷 B 站视频，自动点赞/投币/收藏/发评论，还能写观后感发给你
+desc: |
+  让机器人自己"看"B 站视频，并模拟真实观看行为。
+
+  功能：
+  - 自动挑选视频（热门 / 排行榜 / 首页推荐 / 关键词搜索 / 收藏夹 / 指定 UP 主）
+  - 按真实网页端流程上报观看：点击上报 → 播放心跳（15s 一次）→ 观看进度上报
+  - 观看后按概率自动点赞、投币、收藏、一键三连
+  - 评论支持两种来源：LLM 根据视频标题/简介生成，或从预设模板里随机
+  - 看完后由 LLM 写一段观后感，主动推送到指定 QQ（NapCat / aiocqhttp）
+  - 推送目标与每日推送条数均可配置，默认不限
+  - 每日上限、观看间隔、随机抖动、夜间静默时段，避免过于机械
+  - 观看记录、每日计数、评论历史本地持久化，自动跳过重复视频
+
+  指令：`/bili` 查看帮助。
+
+  ⚠️ 请遵守 B 站用户协议，控制频率，风险自负。
+version: 1.1.0
+author: luoyixiangsi
+repo: https://github.com/luoyixiangsi/astrbot_plugin_bili_autowatch
+astrbot_version: ">=4.16,<5"
+support_platforms:
+  - aiocqhttp
+  - telegram
+  - discord
+  - lark
+  - slack
+tags:
+  - bilibili
+  - automation
+  - 刷视频
+  - 观后感
+  - napcat

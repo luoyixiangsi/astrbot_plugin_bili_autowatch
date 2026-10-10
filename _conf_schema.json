@@ -1,0 +1,303 @@
+{
+  "admin_only": {
+    "description": "仅管理员可用",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后只有 AstrBot 管理员能使用 /bili 指令。"
+  },
+  "notify_session": {
+    "description": "运行播报会话",
+    "type": "string",
+    "default": "",
+    "hint": "填写 unified_msg_origin，机器人会把每次观看结果推送到该会话。留空则不推送；在群里发 /bili here 可自动填入当前会话。"
+  },
+  "notify_qq": {
+    "description": "观后感接收 QQ",
+    "type": "string",
+    "default": "",
+    "hint": "填纯数字 QQ 号，机器人会把观后感私聊发给它。留空时依次回退到「运行播报会话」、AstrBot 管理员列表里形如 default:FriendMessage:123 的会话。"
+  },
+  "notify_push_limit": {
+    "description": "每日推送上限",
+    "type": "int",
+    "default": 0,
+    "hint": "每天最多推送多少条结果到 QQ，0 表示不限制。只限制后台自动刷的推送，手动 /bili review 之类不受限。"
+  },
+  "auto_start": {
+    "description": "加载插件后自动开始刷",
+    "type": "bool",
+    "default": false,
+    "hint": "需要先配置好 Cookie，否则会自动停止。"
+  },
+  "dry_run": {
+    "description": "演练模式（不真正发请求）",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后只挑选视频并打印计划，不调用任何写接口。建议第一次先开着验证配置。"
+  },
+  "credential": {
+    "description": "B 站登录凭据",
+    "type": "object",
+    "hint": "从浏览器开发者工具里复制 Cookie。至少需要 SESSDATA 和 bili_jct，buvid3 建议一并填写。",
+    "items": {
+      "sessdata": {
+        "description": "SESSDATA",
+        "type": "string",
+        "default": "",
+        "secret": true
+      },
+      "bili_jct": {
+        "description": "bili_jct (CSRF Token)",
+        "type": "string",
+        "default": "",
+        "secret": true
+      },
+      "buvid3": {
+        "description": "buvid3",
+        "type": "string",
+        "default": "",
+        "secret": true
+      },
+      "dedeuserid": {
+        "description": "DedeUserID",
+        "type": "string",
+        "default": "",
+        "secret": true
+      }
+    }
+  },
+  "proxy": {
+    "description": "网络代理",
+    "type": "string",
+    "default": "",
+    "hint": "例如 http://127.0.0.1:7890，留空表示直连。"
+  },
+  "source": {
+    "description": "视频来源",
+    "type": "string",
+    "default": "hot",
+    "options": ["hot", "rank", "recommend", "search", "favorite", "up"],
+    "hint": "hot=热门，rank=排行榜，recommend=首页推荐，search=关键词搜索，favorite=收藏夹，up=指定 UP 主投稿。"
+  },
+  "source_options": {
+    "description": "来源参数",
+    "type": "object",
+    "hint": "根据上面选择的来源填写对应参数。",
+    "items": {
+      "keywords": {
+        "description": "搜索关键词",
+        "type": "string",
+        "default": "编程",
+        "hint": "多个关键词用英文逗号分隔，随机选一个。"
+      },
+      "up_mids": {
+        "description": "UP 主 UID 列表",
+        "type": "string",
+        "default": "",
+        "hint": "多个 UID 用英文逗号分隔。"
+      },
+      "favorite_media_id": {
+        "description": "收藏夹 media_id",
+        "type": "int",
+        "default": 0,
+        "hint": "收藏夹链接里 fid 参数的值。"
+      },
+      "page": {
+        "description": "翻页页号",
+        "type": "int",
+        "default": 1,
+        "hint": "热门/搜索/UP 主投稿支持翻页，0 表示每次随机一页。"
+      }
+    }
+  },
+  "watch": {
+    "description": "观看行为",
+    "type": "object",
+    "items": {
+      "max_watch_seconds": {
+        "description": "单视频最长观看秒数",
+        "type": "int",
+        "default": 180,
+        "hint": "视频再长也只看这么久，避免一个视频卡半小时。"
+      },
+      "watch_ratio": {
+        "description": "观看比例",
+        "type": "float",
+        "default": 1.0,
+        "hint": "实际观看时长 = 视频时长 x 该比例，再与上面的秒数上限取小。1.0 表示尽量看完。"
+      },
+      "heartbeat_interval": {
+        "description": "心跳间隔（秒）",
+        "type": "int",
+        "default": 15,
+        "hint": "网页端默认 15 秒一次，实际会在 12~18 秒之间随机。"
+      },
+      "report_history": {
+        "description": "上报观看进度",
+        "type": "bool",
+        "default": true,
+        "hint": "关闭后不会出现在 B 站历史记录里。"
+      },
+      "report_click": {
+        "description": "上报点击（计入播放量）",
+        "type": "bool",
+        "default": false,
+        "hint": "该接口被 B 站限制，滥用可能触发风控，默认关闭。"
+      }
+    }
+  },
+  "schedule": {
+    "description": "调度与频率",
+    "type": "object",
+    "items": {
+      "daily_limit": {
+        "description": "每日最多观看视频数",
+        "type": "int",
+        "default": 20
+      },
+      "interval_min": {
+        "description": "两个视频之间的最小间隔（秒）",
+        "type": "int",
+        "default": 300
+      },
+      "interval_max": {
+        "description": "两个视频之间的最大间隔（秒）",
+        "type": "int",
+        "default": 900
+      },
+      "quiet_hours": {
+        "description": "静默时段",
+        "type": "string",
+        "default": "01:00-07:00",
+        "hint": "格式 HH:MM-HH:MM，该时间段内不刷。留空表示全天可刷。"
+      },
+      "skip_watched_days": {
+        "description": "重复视频冷却天数",
+        "type": "int",
+        "default": 7,
+        "hint": "最近 N 天看过的视频不再选，0 表示不限制。"
+      }
+    }
+  },
+  "interact": {
+    "description": "互动行为",
+    "type": "object",
+    "items": {
+      "like_probability": {
+        "description": "点赞概率",
+        "type": "float",
+        "default": 0.6
+      },
+      "coin_probability": {
+        "description": "投币概率",
+        "type": "float",
+        "default": 0.2
+      },
+      "coin_num": {
+        "description": "每次投币数",
+        "type": "int",
+        "default": 1,
+        "hint": "1 或 2。"
+      },
+      "coin_also_like": {
+        "description": "投币时同时点赞",
+        "type": "bool",
+        "default": true
+      },
+      "favorite_probability": {
+        "description": "收藏概率",
+        "type": "float",
+        "default": 0.0
+      },
+      "favorite_media_id": {
+        "description": "收藏到哪个收藏夹",
+        "type": "int",
+        "default": 0,
+        "hint": "0 表示复用视频来源里的收藏夹 media_id。"
+      }
+    }
+  },
+  "comment": {
+    "description": "评论",
+    "type": "object",
+    "items": {
+      "enabled": {
+        "description": "启用自动评论",
+        "type": "bool",
+        "default": false
+      },
+      "probability": {
+        "description": "评论概率",
+        "type": "float",
+        "default": 0.3
+      },
+      "source": {
+        "description": "评论来源",
+        "type": "string",
+        "default": "llm",
+        "options": ["llm", "template"],
+        "hint": "llm=由大模型根据视频信息生成，template=从下面的模板里随机。"
+      },
+      "provider_id": {
+        "description": "指定 LLM 提供商 ID",
+        "type": "string",
+        "default": "",
+        "hint": "留空则使用 AstrBot 当前默认的对话模型。"
+      },
+      "persona": {
+        "description": "评论风格提示词",
+        "type": "text",
+        "default": "你是一个普通的 B 站用户，说话自然、口语化、简短，像真人随手发的弹幕式评论。不要用营销号口吻，不要复述标题，不要提问，不要 emoji 刷屏。",
+        "hint": "作为 system prompt 传给大模型。"
+      },
+      "max_length": {
+        "description": "评论最大字数",
+        "type": "int",
+        "default": 40
+      },
+      "templates": {
+        "description": "评论模板",
+        "type": "list",
+        "default": ["讲得挺清楚的，学到了", "这个角度有意思", "质量好高，收藏了", "看完感觉收获不少", "支持一下，希望多更"],
+        "hint": "source 选 template 时随机抽取；LLM 生成失败时也会回退到这里。"
+      },
+      "blacklist": {
+        "description": "评论黑名单词",
+        "type": "list",
+        "default": ["http", "微信", "加群", "私聊", "代刷", "广告"],
+        "hint": "生成的评论里只要包含这些词就丢弃并改用模板。"
+      }
+    }
+  },
+  "review": {
+    "description": "观后感",
+    "type": "object",
+    "hint": "看完视频后让大模型写一段观后感，随运行结果一起推送到「观后感接收 QQ」。",
+    "items": {
+      "enabled": {
+        "description": "启用观后感",
+        "type": "bool",
+        "default": true,
+        "hint": "关闭后运行结果里只有标题、时长和动作，不调用大模型。"
+      },
+      "provider_id": {
+        "description": "指定 LLM 提供商 ID",
+        "type": "string",
+        "default": "",
+        "hint": "留空则使用 AstrBot 当前默认的对话模型。"
+      },
+      "persona": {
+        "description": "观后感风格提示词",
+        "type": "text",
+        "default": "你是一个爱看 B 站的普通观众，看完视频后喜欢跟朋友随口聊聊感受。说话自然、口语化、有自己的判断，可以吐槽也可以夸，但不要空话套话，不要复述标题，不要提问。",
+        "hint": "作为 system prompt 传给大模型。"
+      },
+      "max_length": {
+        "description": "观后感最大字数",
+        "type": "int",
+        "default": 300,
+        "hint": "比评论宽松，默认 300 字。"
+      }
+    }
+  }
+}

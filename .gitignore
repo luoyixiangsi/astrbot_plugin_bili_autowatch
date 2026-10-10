@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 本地配置与密钥（Cookie 等绝不应提交）
+.env
+*.local.json
+*_config.json
+config.json
+
+# 运行数据
+data/
+*.log
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
